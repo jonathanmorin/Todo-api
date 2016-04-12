@@ -29,8 +29,8 @@ app.get('/', function (res, res)	{
 
 
 app.get('/todos', function (req, res)	{
-	// res.json(todos);
-	res.status(404).send();
+	res.json(todos);
+	// res.status(404).send();
 	});
 
 
