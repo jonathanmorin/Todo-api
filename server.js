@@ -17,16 +17,23 @@ app.get('/', function (res, res)	{
 
 
 
-// GET /todos?completed=true
+// GET /todos?completed=true&q=house
 app.get('/todos', function (req, res)	{
 	var queryParams = req.query;
 	var filteredTodos = todos;
 
-	if (queryParams.completed === 'true') {
-		filteredTodos = _.where(filteredTodos, {completed:true});
-	} else if (queryParams.completed === 'false') {
-		filteredTodos = _.where(filteredTodos, {completed:false});
-	}
+	if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
+			filteredTodos = _.where(filteredTodos, {completed:true});
+		} else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
+			filteredTodos = _.where(filteredTodos, {completed:false});
+		}
+
+	if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0) {
+		filteredTodos = _.filter(filteredTodos, function (argument){
+			return argument.description.toLowerCase().indexOf(queryParams.q.toLowerCase()) > -1; /*	teacher	*/
+			//if (argument.description.search(queryParams.q) >= 0) {return true} else {return false} /*	mine	*/
+		})
+		}
 
 	res.json(filteredTodos);
 	// res.status(404).send();
