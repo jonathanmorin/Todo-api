@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
+var db = require('./db.js');
 
 var app = express();
 var PORT = process.env.PORT || 3000;
@@ -59,18 +60,24 @@ app.get('/todos/:id', function (req, res)	{
 app.post('/todos', function (req, res)	{
 		var body = _.pick(req.body, 'description', 'completed');
 
-	if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0 ) {
-		return res.status(400).send();
-	};
+		if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
+		 	
+		 	return res.status(400).json("Completed is not a Boolean or description is empty or it is not a string");
+			};
 
-	body.description = body.description.trim();
-
-
-	body.id = todoNextId++;
+		body.description = body.description.trim();
 		
-	todos.push(body);
 
-	res.json(todos);
+		db.todo.create(body)
+			.then(function (todo) {
+			 	console.log(todo)
+			 	res.json(todo.toJSON());
+				}, 
+				function (e) {
+				 res.status(400).json(e);
+				})
+
+
 	}); /*	End Post	*/
 
 
@@ -127,9 +134,12 @@ app.put('/todos/:id', function (req, res) {
 
 
 
+db.sequelize.sync().then(function(){
+
+	app.listen(PORT, function () {
+		console.log('Express listening on port ' + PORT + ' !');
+		});
+
+});
 
 
-
-app.listen(PORT, function () {
-	console.log('Express listening on port ' + PORT + ' !');
-	});

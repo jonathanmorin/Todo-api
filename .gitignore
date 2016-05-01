@@ -4,3 +4,7 @@ todo_api.sublime-workspace
 server1.js
 server2.js
 test.js
+playground/basic-sqlite-database2.js
+playground/basic-sqlite-database3.js
+data/*.sqlite
+playground/*.sqlite
